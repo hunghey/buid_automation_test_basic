@@ -9,12 +9,18 @@ repositories {
     mavenCentral()
 }
 
+def allureVersion = "2.24.0"
+
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
-    implementation 'io.github.bonigarcia:webdrivermanager:3.8.1'
+    implementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
     testImplementation 'org.testng:testng:7.4.0'
+
+    testImplementation platform("io.qameta.allure:allure-bom:$allureVersion")
+    testImplementation "io.qameta.allure:allure-testng"
+
 }
 
 test {
@@ -33,3 +39,5 @@ tasks.named('test') {
     }
     reports.html.setDestination(file("$projectDir/GradleReports"))
 }
+
+//allure.results.directory="build/allure-results"
