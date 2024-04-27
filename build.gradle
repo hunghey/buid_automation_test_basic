@@ -1,43 +1,87 @@
 plugins {
-    id 'application'
+    id 'java'
 }
-
-group = 'org.example'
-version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven { url("https://plugins.gradle.org/m2/") }
 }
 
-def allureVersion = "2.24.0"
-
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
-    implementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
-    testImplementation 'org.testng:testng:7.4.0'
+    testImplementation("com.codeborne:selenide:7.2.3")
 
-    testImplementation platform("io.qameta.allure:allure-bom:$allureVersion")
-    testImplementation "io.qameta.allure:allure-testng"
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
 
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-junit5
+    testImplementation("io.qameta.allure:allure-junit5:2.25.0")
+
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-selenide
+    testImplementation("io.qameta.allure:allure-selenide:2.25.0")
 }
 
 test {
-    useJUnitPlatform()
-}
-application {
-    // Define the main class for the application.
-    mainClass = 'com.example.App'
-}
-
-tasks.named('test') {
-    // Use TestNG for unit tests.
-    useTestNG() {
-        useDefaultListeners = true
-        outputDirectory = file("$projectDir/TestNG_Reports")
+    useJUnitPlatform {
+        includeEngines("junit-jupiter")
     }
-    reports.html.setDestination(file("$projectDir/GradleReports"))
+
+    // Make failing tests do not fail the task.
+    ignoreFailures = true
+
+    // That means outputs are not up to date.
+    // Therefore you don't have to run 'clean' task
+    // if you have not updated any codes before executing the tests.
+    outputs.upToDateWhen { false }
+
+    // Tell Gradle we want to enable XML report output for JUnit.
+    reports {
+        junitXml {
+            mergeReruns = true
+            outputPerTestCase = true
+        }
+    }
+
+    // Configure the logging of the test execution.
+    testLogging {
+        // Make the standard streams (err and out) visible
+        // at console when running tests.
+        showStandardStreams = true
+
+        // Expect PASSED, SKIPPED, FAILED tests to be logged.
+        events "passed", "skipped", "failed"
+    }
 }
 
-//allure.results.directory="build/allure-results"
+test {
+    // Tell Gradle we want to use JUnit5
+    // to discover and execute the tests (default to JUnit4).
+    useJUnitPlatform {
+        includeEngines("junit-jupiter")
+    }
+
+    // Make failing tests do not fail the task.
+    ignoreFailures = true
+
+    // That means outputs are not up to date.
+    // Therefore you don't have to run 'clean' task
+    // if you have not updated any codes before executing the tests.
+    outputs.upToDateWhen { false }
+
+    // Tell Gradle we want to enable XML report output for JUnit.
+    reports {
+        junitXml {
+            mergeReruns = true
+            outputPerTestCase = true
+        }
+    }
+
+    // Configure the logging of the test execution.
+    testLogging {
+        // Make the standard streams (err and out) visible
+        // at console when running tests.
+        showStandardStreams = true
+
+        // Expect PASSED, SKIPPED, FAILED tests to be logged.
+        events "passed", "skipped", "failed"
+    }
+}
