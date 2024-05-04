@@ -9,27 +9,31 @@ import org.openqa.selenium.support.FindBy;
 import static com.codeborne.selenide.Selenide.*;
 
 public class HomePage {
-
     @FindBy(className = "ico-register")
     private SelenideElement registerBtn;
 
     @FindBy(className = "ico-login")
     private SelenideElement loginBtn;
 
+    @FindBy(className = "ico-logout")
+    private SelenideElement logoutBtn;
+
     @FindBy(xpath = "//div[@class='page-title']/h1")
     private SelenideElement pageTitle;
 
-    @Step("Sign up account")
-    public RegisterPage goToRegisterPage(){
+    @Step("Register account")
+    public RegisterPage goToRegisterPage() {
         registerBtn.click();
-        Assertions.assertEquals(pageTitle.getOwnText(),"Register");
+        Assertions.assertEquals(pageTitle.getOwnText(), "Register");
         return page(RegisterPage.class);
     }
-    @Test
-    @Step("Sign up account")
-    public void goToRegisterPage1(){
-        registerBtn.click();
-        Assertions.assertEquals(pageTitle.getOwnText(),"Register");
+
+    @Step("Log out")
+    public HomePage logout(){
+        Assertions.assertFalse(loginBtn.isEnabled());
+        logoutBtn.click();
+        loginBtn.isEnabled();
+        return this;
     }
 
     @Step("Login account")
