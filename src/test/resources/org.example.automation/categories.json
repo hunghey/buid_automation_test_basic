@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Product Defects - Definition",
+    "matchedStatuses": [ "failed" ],
+    "traceRegex": ".*ElementShould.*",
+    "messageRegex": ".*Element should.*"
+  }
+]
