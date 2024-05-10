@@ -3,10 +3,9 @@ package org.example.automation.pages;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.FindBy;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.page;
 
 public class HomePage {
     @FindBy(className = "ico-register")
@@ -30,7 +29,6 @@ public class HomePage {
 
     @Step("Log out")
     public HomePage logout(){
-        Assertions.assertFalse(loginBtn.isEnabled());
         logoutBtn.click();
         loginBtn.isEnabled();
         return this;

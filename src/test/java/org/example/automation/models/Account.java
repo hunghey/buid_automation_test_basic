@@ -9,14 +9,14 @@ import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@YamlFrom(resource = "org/example/automation/account.yml")
-public class AccountModel extends YamlData<AccountModel> {
+@YamlFrom(resource = "org.example.automation/account.yml")
+public class Account extends YamlData<Account> {
     private String firstname;
     private String lastname;
     private String email;
     private String password;
 
-    public AccountModel generateEmail(){
+    public Account generateEmail(){
         String uuid = String.valueOf(UUID.randomUUID());
         this.email = email.replaceAll("%UUID%",uuid);
         return this;
