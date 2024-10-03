@@ -23,6 +23,10 @@ dependencies {
 
     // https://mvnrepository.com/artifact/io.qameta.allure/allure-selenide
     testImplementation("io.qameta.allure:allure-selenide:2.25.0")
+
+    // https://mvnrepository.com/artifact/com.sun.mail/javax.mail
+    implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+
 }
 
 test {
@@ -89,4 +93,11 @@ test {
         // Expect PASSED, SKIPPED, FAILED tests to be logged.
         events "passed", "skipped", "failed"
     }
+}
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
 }
