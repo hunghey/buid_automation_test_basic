@@ -1,20 +1,17 @@
 package org.example.signup.common;
 
 import javax.mail.*;
-import javax.mail.internet.MimeBodyPart;
-import java.util.Optional;
+import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EmailUtils {
 
-    public String getOTPFromMail( String email, String password1) {
+    public static String getOTPFromMail(String email, String password, String titleEmail) {
 
         String host = "imap.gmail.com"; // IMAP server
         String mailStoreType = "imap";
-        String username = email;
-        String password = "npya osms zbzt fcpk"; // App password if 2FA is enabled
 
         try {
             // Cấu hình properties cho kết nối
@@ -33,7 +30,7 @@ public class EmailUtils {
             Store store = emailSession.getStore(mailStoreType);
 
             // Kết nối đến máy chủ email
-            store.connect(host, username, password);
+            store.connect(host, email, password);
 
             // Mở thư mục INBOX
             Folder emailFolder = store.getFolder("INBOX");
@@ -42,10 +39,18 @@ public class EmailUtils {
             // Xử lý các email
             Message[] messages = emailFolder.getMessages();
 
-            for (Message message : messages) {
-                if (message.getSubject().contains("Your Verification Code")) {
+            for (int i = messages.length - 1; i >= 0; i--) {
+                Message message = messages[i];
+
+                if (message.getSubject().contains(titleEmail)) {
+                    // Lấy nội dung của email
                     String content = getTextFromMessage(message);
-                    return extractVerificationCode(content);
+
+                    // Trích xuất mã OTP từ nội dung
+                    String otpCode = extractVerificationCode(content);
+
+                    System.out.println("Mã OTP gần đây nhất: " + otpCode);
+                    break; // Thoát vòng lặp sau khi tìm thấy email phù hợp
                 }
             }
             emailFolder.close(false);
@@ -59,10 +64,10 @@ public class EmailUtils {
 
     // Hàm trích xuất mã xác thực từ nội dung email
     private static String extractVerificationCode(String content) {
-        Pattern pattern = Pattern.compile("\\d{6}");  // Giả sử mã là 6 số
-        Matcher matcher = pattern.matcher(content);
+        Pattern otpPattern = Pattern.compile(">(\\d{6})<");
+        Matcher matcher = otpPattern.matcher(content);
         if (matcher.find()) {
-            return matcher.group();
+            return matcher.group(1);
         }
         return null;
     }
@@ -72,13 +77,22 @@ public class EmailUtils {
         if (message.isMimeType("text/plain")) {
             return message.getContent().toString();
         } else if (message.isMimeType("multipart/*")) {
-            Multipart multipart = (Multipart) message.getContent();
-            for (int i = 0; i < multipart.getCount(); i++) {
-                MimeBodyPart bodyPart = (MimeBodyPart) multipart.getBodyPart(i);
+            String result = "";
+//            MimeMultipart xu li email co cau truc da phan
+            MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
+//            lay so luong phan noi dung
+            int count = mimeMultipart.getCount();
+            for (int i = 0; i < count; i++) {
+                BodyPart bodyPart = mimeMultipart.getBodyPart(i);
                 if (bodyPart.isMimeType("text/plain")) {
-                    return bodyPart.getContent().toString();
+                    result = result + "\n" + bodyPart.getContent();
+                } else if (bodyPart.isMimeType("text/html")) {
+                    result = result + "\n" + bodyPart.getContent();
                 }
             }
+            return result;
+        } else if (message.isMimeType("text/html")) {
+            return message.getContent().toString();
         }
         return null;
     }
