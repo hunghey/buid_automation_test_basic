@@ -1,37 +1,37 @@
 package org.example.signup.pages;
 
+import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import org.example.signup.common.EmailUtils;
+import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.support.FindBy;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.*;
 
 public class CodeConfirmationPage {
-//    String verification = EmailUtils.getOTPFromMail("detainhom1101@gmail.com","bochungquoc");
 
+    @FindBy(xpath = "//div[contains(@class,'invalid-feedback')]")
+    private SelenideElement verifyMessage;
 
-//    public static void enterPinCode(String pin) {
-//        // Giả sử mã PIN là một chuỗi 4 ký tự số, ví dụ: "1234"
-//
-//        // Kiểm tra chiều dài mã pin có đủ 4 ký tự không
-//        if (pin.length() != 4) {
-//            throw new IllegalArgumentException("PIN must be 4 digits");
-//        }
-//
-//        // Điền từng ký tự vào ô tương ứng
-//        $("#pin_0").setValue(String.valueOf(pin.charAt(0)));
-//        $("#pin_1").setValue(String.valueOf(pin.charAt(1)));
-//        $("#pin_2").setValue(String.valueOf(pin.charAt(2)));
-//        $("#pin_3").setValue(String.valueOf(pin.charAt(3)));
-//    }
-//
-//
-//    @Step("click login button")
-//    public CodeConfirmationPage co() {
-////        $("#verification-code-input").setValue(verification);
-//
-//        $("#submit-verification").click();
-//        return page(CodeConfirmationPage.class);
-//    }
+    String inputdata = "//input[contains(@aria-label,'Digit %d')]";
 
+    @Step("click login button")
+    public CodeConfirmationPage enterPinCode(String pin) {
+    //  xpath start from 1
+        for (int i = 1; i <= pin.length(); i++) {
+            $x(String.format(inputdata, i))
+                    .setValue(String.valueOf(pin.charAt(i - 1)));
+        }
+        return this;
+
+    }
+
+    @Step("click login button")
+    public CodeConfirmationPage clickConfirm() {
+        $("#submit-verification").click();
+        return page(CodeConfirmationPage.class);
+    }
+
+    public void confirmVerify() {
+        Assertions.assertEquals("Mã OTP không đúng.", verifyMessage.getText());
+    }
 }

@@ -49,8 +49,7 @@ public class EmailUtils {
                     // Trích xuất mã OTP từ nội dung
                     String otpCode = extractVerificationCode(content);
 
-                    System.out.println("Mã OTP gần đây nhất: " + otpCode);
-                    break; // Thoát vòng lặp sau khi tìm thấy email phù hợp
+                    return otpCode;
                 }
             }
             emailFolder.close(false);
