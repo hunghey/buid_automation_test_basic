@@ -1,19 +1,30 @@
 pipeline {
+    agent any
     parameters {
-        string(name: 'SUT_URL', defaultValue: 'http://52.198.217.55')
-        choice(name: 'JDK', choices: ['JDK:21', 'JDK:17', 'JDK:11', 'JDK:8'], description: 'chooseJDK version')
+        choice(name: 'JDK_VERSION', choices: ['JDK:17',  'JDK:21'], description: 'Chọn phiên bản JDK để chạy Pipeline')
+        string(name: 'SUT_URL', defaultValue: 'http://52.198.217.55', description: 'SUTのURLです。')
     }
     environment {
-        CORRETTO_TAG = convertCorrettoJDK(params.JDK)
+        JAVA_HOME = tool name: "${params.JDK_VERSION}", type: 'jdk'
+        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
     }
-    agent none
-
     stages {
-        stage("Build Each Samples") {
-            step{
-                echo %SUT_URL%
+        stage('Kiểm tra JDK') {
+            steps {
+                script {
+                    echo "Sử dụng phiên bản JDK: ${params.JDK_VERSION}"
+                    echo "${params.SUT_URL}"
+                    sh 'java -version'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    // Chạy lệnh build, ví dụ Maven hoặc Gradle tùy theo project của bạn
+                    echo '11111' // hoặc 'mvn clean install'
+                }
             }
         }
     }
-}    
-
+}
