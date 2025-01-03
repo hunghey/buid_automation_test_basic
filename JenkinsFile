@@ -1,11 +1,19 @@
 pipeline {
-    agent any
+    parameters {
+        string(name: 'SUT_URL', defaultValue: 'http://52.198.217.55')
+        choice(name: 'JDK', choices: ['JDK:21', 'JDK:17', 'JDK:11', 'JDK:8'], description: 'chooseJDK version')
+    }
+    environment {
+        CORRETTO_TAG = convertCorrettoJDK(params.JDK)
+    }
+    agent none
 
     stages {
-        stage('Build') {
-            steps {
-                bat './gradlew test'
+        stage("Build Each Samples") {
+            step{
+                echo %SUT_URL%
             }
         }
     }
-}
+}    
+
