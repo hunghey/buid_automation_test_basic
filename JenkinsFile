@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Chạy lệnh build, ví dụ Maven hoặc Gradle tùy theo project của bạn
-                    echo '11111' // hoặc 'mvn clean install'
+                    echo 'Build run' // hoặc 'mvn clean install'
                 }
             }
         }
