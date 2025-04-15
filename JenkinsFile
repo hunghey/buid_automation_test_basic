@@ -23,6 +23,7 @@ pipeline {
                 script {
                     // Chạy lệnh build, ví dụ Maven hoặc Gradle tùy theo project của bạn
                     echo 'Build run' 
+                    echo 'test trigger' 
                 }
             }
         }
