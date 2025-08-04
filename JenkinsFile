@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         choice(name: 'JDK_VERSION', choices: ['JDK:17',  'JDK:21'], description: 'Chọn phiên bản JDK để chạy Pipeline')
-        string(name: 'SUT_URL', defaultValue: 'http://52.198.217.55', description: 'SUTのURLです。')
+        string(name: 'SUT_URL', defaultValue: 'http:', description: 'SUTの。')
     }
     environment {
         JAVA_HOME = tool name: "${params.JDK_VERSION}", type: 'jdk'
